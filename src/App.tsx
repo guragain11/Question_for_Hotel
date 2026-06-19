@@ -241,6 +241,17 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-100">
+      {/* Admin Link */}
+      <div className="fixed top-4 right-4 z-50">
+        <a
+          href="/admin"
+          className="text-xs px-3 py-1.5 bg-gray-800 text-white rounded-full hover:bg-gray-900 transition opacity-50 hover:opacity-100"
+          title="Admin Dashboard"
+        >
+          Admin
+        </a>
+      </div>
+
       {/* Hero Header */}
       <div className="relative overflow-hidden bg-gradient-to-br from-primary-800 via-primary-700 to-primary-900">
         <div className="absolute inset-0 opacity-10">
