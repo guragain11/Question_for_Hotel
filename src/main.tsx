@@ -4,7 +4,7 @@ import "./index.css";
 import App from "./App";
 import { AdminPage } from "./pages/AdminPage";
 
-const isAdminPath = window.location.pathname === '/admin';
+const isAdminPath = window.location.hash === '#/admin';
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
