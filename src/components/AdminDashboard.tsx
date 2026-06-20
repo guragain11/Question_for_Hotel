@@ -350,7 +350,8 @@ export function AdminDashboard({ token, onLogout }: AdminDashboardProps) {
                         </div>
                       </td>
                     </tr>
-                  ))}
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
