@@ -162,24 +162,29 @@ export function AdminDashboard({ token, onLogout }: AdminDashboardProps) {
 
   const renderSurveyDetail = (survey: Survey) => {
     const fields: { key: string; value: any }[] = [];
+    const fd = typeof survey.form_data === 'string' ? JSON.parse(survey.form_data) : survey.form_data || {};
+
+    const snakeToCamel = (s: string) => s.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
 
     for (const [col, label] of Object.entries(labelMap)) {
-      const val = (survey as any)[col];
+      let val = (survey as any)[col];
+      if (val === null || val === undefined) {
+        const camelKey = snakeToCamel(col);
+        val = fd[camelKey];
+      }
       if (val === null || val === undefined || val === '' || (Array.isArray(val) && val.length === 0)) continue;
       fields.push({ key: label, value: val });
     }
 
-    // Add custom questions from form_data
-    if (survey.custom_questions) {
-      const questions = typeof survey.custom_questions === 'string'
-        ? JSON.parse(survey.custom_questions)
-        : survey.custom_questions;
-      if (Array.isArray(questions)) {
-        questions.forEach((q: any) => {
-          const answer = survey.form_data?.customAnswers?.[q.id] || '';
-          fields.push({ key: `[Custom] ${q.title}`, value: answer || '(no answer)' });
-        });
-      }
+    // Add custom questions
+    const customQuestions = survey.custom_questions
+      ? (typeof survey.custom_questions === 'string' ? JSON.parse(survey.custom_questions) : survey.custom_questions)
+      : fd.customQuestions || [];
+    if (Array.isArray(customQuestions)) {
+      customQuestions.forEach((q: any) => {
+        const answer = fd.customAnswers?.[q.id] || '';
+        fields.push({ key: `[Custom] ${q.title}`, value: answer || '(no answer)' });
+      });
     }
 
     return (
@@ -311,15 +316,17 @@ export function AdminDashboard({ token, onLogout }: AdminDashboardProps) {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredSurveys.map((survey) => (
+                  {filteredSurveys.map((survey) => {
+                    const fd = typeof survey.form_data === 'string' ? JSON.parse(survey.form_data) : survey.form_data || {};
+                    return (
                     <tr key={survey.id} className="border-b hover:bg-gray-50 transition">
                       <td className="px-6 py-4 text-gray-900 font-medium">#{survey.id}</td>
-                      <td className="px-6 py-4 text-gray-900">{survey.hotel_name || 'N/A'}</td>
-                      <td className="px-6 py-4 text-gray-700">{survey.email || 'N/A'}</td>
-                      <td className="px-6 py-4 text-gray-700">{survey.contact_number || 'N/A'}</td>
-                      <td className="px-6 py-4 text-gray-700">{survey.location || 'N/A'}</td>
+                      <td className="px-6 py-4 text-gray-900">{survey.hotel_name || fd.hotelName || 'N/A'}</td>
+                      <td className="px-6 py-4 text-gray-700">{survey.email || fd.email || 'N/A'}</td>
+                      <td className="px-6 py-4 text-gray-700">{survey.contact_number || fd.contactNumber || 'N/A'}</td>
+                      <td className="px-6 py-4 text-gray-700">{survey.location || fd.location || 'N/A'}</td>
                       <td className="px-6 py-4 text-gray-700">
-                        {survey.hotel_management_system_name || survey.has_hotel_management_system || 'N/A'}
+                        {survey.hotel_management_system_name || fd.hotelManagementSystemName || survey.has_hotel_management_system || fd.hasHotelManagementSystem || 'N/A'}
                       </td>
                       <td className="px-6 py-4 text-gray-700">
                         {new Date(survey.created_at).toLocaleDateString()}
