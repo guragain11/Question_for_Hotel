@@ -36,30 +36,50 @@ const adminAuth = (req: Request, res: Response, next: Function) => {
 // POST: Save survey response
 app.post('/api/surveys', async (req: Request, res: Response) => {
   try {
-    const surveyData = req.body;
+    const d = req.body;
     
     const query = `
       INSERT INTO survey_responses (
-        hotel_name, email, contact_number, location, current_software,
-        biggest_problem, advanced_features, amenities, sustainability,
-        budget, timeline, additional_comments, created_at
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, NOW())
+        hotel_name, email, contact_number, location, location_other,
+        current_software, current_software_other,
+        biggest_problem, advanced_features,
+        payment_structure, payment_structure_other, current_payment,
+        payment_model, payment_model_other,
+        migration_willingness, migration_willingness_other,
+        ota_percentage, has_website, has_website_other,
+        mobile_app_importance, mobile_app_importance_other,
+        seasonal_pricing_difficulty, seasonal_pricing_difficulty_other,
+        multiple_properties, multiple_properties_other,
+        overbooking_frequency, overbooking_frequency_other,
+        automated_messages, automated_messages_other,
+        extra_services_upsell, extra_services_upsell_other,
+        has_hotel_management_system, hotel_management_system_name,
+        why_not_using_hms, would_use_custom_hms, would_use_custom_hms_other,
+        hms_requirements, hms_max_budget,
+        custom_questions, form_data
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36,$37,$38,$39,$40,$41)
       RETURNING id;
     `;
     
     const values = [
-      surveyData.hotelName,
-      surveyData.email,
-      surveyData.contactNumber,
-      surveyData.location,
-      JSON.stringify(surveyData.currentSoftware),
-      surveyData.biggestProblem,
-      surveyData.advancedFeatures,
-      JSON.stringify(surveyData.amenities),
-      JSON.stringify(surveyData.sustainability),
-      surveyData.budget,
-      surveyData.timeline,
-      surveyData.additionalComments,
+      d.hotelName, d.email, d.contactNumber, d.location, d.locationOther,
+      JSON.stringify(d.currentSoftware), d.currentSoftwareOther,
+      d.biggestProblem, d.advancedFeatures,
+      d.paymentStructure, d.paymentStructureOther, d.currentPayment,
+      d.paymentModel, d.paymentModelOther,
+      d.migrationWillingness, d.migrationWillingnessOther,
+      d.otaPercentage, d.hasWebsite, d.hasWebsiteOther,
+      d.mobileAppImportance, d.mobileAppImportanceOther,
+      d.seasonalPricingDifficulty, d.seasonalPricingDifficultyOther,
+      d.multipleProperties, d.multiplePropertiesOther,
+      d.overbookingFrequency, d.overbookingFrequencyOther,
+      d.automatedMessages, d.automatedMessagesOther,
+      d.extraServicesUpsell, d.extraServicesUpsellOther,
+      d.hasHotelManagementSystem, d.hotelManagementSystemName,
+      d.whyNotUsingHMS, d.wouldUseCustomHMS, d.wouldUseCustomHMSOther,
+      d.hmsRequirements, d.hmsMaxBudget,
+      JSON.stringify(d.customQuestions),
+      JSON.stringify({ ...d, customQuestions: undefined }),
     ];
     
     const result = await pool.query(query, values);

@@ -225,9 +225,19 @@ export default function App() {
     return 5;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Survey Data:', { formData, customQuestions });
+    try {
+      const payload = { ...formData, customQuestions };
+      const res = await fetch('/api/surveys', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error('Failed to submit');
+    } catch (err) {
+      console.error('Submit failed:', err);
+    }
     setSubmitted(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
