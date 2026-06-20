@@ -57,7 +57,7 @@ app.post('/api/surveys', async (req: Request, res: Response) => {
         why_not_using_hms, would_use_custom_hms, would_use_custom_hms_other,
         hms_requirements, hms_max_budget,
         custom_questions, form_data
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36,$37,$38,$39,$40,$41)
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36,$37,$38,$39,$40)
       RETURNING id;
     `;
     
@@ -85,8 +85,8 @@ app.post('/api/surveys', async (req: Request, res: Response) => {
     const result = await pool.query(query, values);
     res.json({ id: result.rows[0].id, message: 'Survey saved successfully' });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Failed to save survey' });
+    console.error('Survey insert error:', error);
+    res.status(500).json({ error: 'Failed to save survey', detail: (error as any)?.message });
   }
 });
 
