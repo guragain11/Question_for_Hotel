@@ -163,9 +163,13 @@ app.get('/api/surveys/export/csv', adminAuth, async (req: Request, res: Response
   }
 });
 
-// SPA fallback: serve index.html for all non-API routes (e.g., /admin)
+// SPA fallback: redirect /admin to hash route, serve index.html for the rest
 app.get('*', (req: Request, res: Response) => {
   if (req.path.startsWith('/api')) return;
+  if (req.path === '/admin') {
+    res.redirect('/#/admin');
+    return;
+  }
   res.sendFile(path.resolve(distPath, 'index.html'));
 });
 
