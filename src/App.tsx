@@ -25,6 +25,37 @@ import CustomQuestionBlock from './components/CustomQuestionBlock';
 import SuccessScreen from './components/SuccessScreen';
 import type { FormData, CustomQuestion } from './types';
 
+function SectionWrapper({
+  sectionNum,
+  collapsedSections,
+  onToggle,
+  children,
+}: {
+  sectionNum: number;
+  collapsedSections: Record<number, boolean>;
+  onToggle: (section: number) => void;
+  children: React.ReactNode;
+}) {
+  const isCollapsed = collapsedSections[sectionNum];
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => onToggle(sectionNum)}
+        className="absolute top-6 right-6 p-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all z-10 sm:top-8 sm:right-8"
+      >
+        {isCollapsed ? <ChevronDown className="w-5 h-5" /> : <ChevronUp className="w-5 h-5" />}
+      </button>
+      {!isCollapsed && children}
+      {isCollapsed && (
+        <div className="pt-2 pb-2 px-1">
+          <p className="text-sm text-slate-400 italic">Section collapsed — click to expand</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 const initialFormData: FormData = {
   hotelName: '',
   email: '',
@@ -212,33 +243,6 @@ export default function App() {
     return <SuccessScreen onReset={handleReset} />;
   }
 
-  const SectionWrapper = ({
-    sectionNum,
-    children,
-  }: {
-    sectionNum: number;
-    children: React.ReactNode;
-  }) => {
-    const isCollapsed = collapsedSections[sectionNum];
-    return (
-      <div className="relative">
-        <button
-          type="button"
-          onClick={() => toggleSection(sectionNum)}
-          className="absolute top-6 right-6 p-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all z-10 sm:top-8 sm:right-8"
-        >
-          {isCollapsed ? <ChevronDown className="w-5 h-5" /> : <ChevronUp className="w-5 h-5" />}
-        </button>
-        {!isCollapsed && children}
-        {isCollapsed && (
-          <div className="pt-2 pb-2 px-1">
-            <p className="text-sm text-slate-400 italic">Section collapsed — click to expand</p>
-          </div>
-        )}
-      </div>
-    );
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-100">
       {/* Admin Link */}
@@ -301,7 +305,7 @@ export default function App() {
         <form onSubmit={handleSubmit} noValidate>
           {/* SECTION 1 */}
           <div className="bg-white rounded-2xl shadow-lg shadow-slate-200/50 border border-slate-100 p-6 sm:p-8 mb-6 animate-fade-in-up">
-            <SectionWrapper sectionNum={1}>
+            <SectionWrapper sectionNum={1} collapsedSections={collapsedSections} onToggle={toggleSection}>
               <SectionHeader
                 number={1}
                 title="Basic Information"
@@ -353,7 +357,7 @@ export default function App() {
 
           {/* SECTION 2 */}
           <div className="bg-white rounded-2xl shadow-lg shadow-slate-200/50 border border-slate-100 p-6 sm:p-8 mb-6 animate-fade-in-up">
-            <SectionWrapper sectionNum={2}>
+            <SectionWrapper sectionNum={2} collapsedSections={collapsedSections} onToggle={toggleSection}>
               <SectionHeader
                 number={2}
                 title="Current Operations & Pain Points"
@@ -404,7 +408,7 @@ export default function App() {
 
           {/* SECTION 3 */}
           <div className="bg-white rounded-2xl shadow-lg shadow-slate-200/50 border border-slate-100 p-6 sm:p-8 mb-6 animate-fade-in-up">
-            <SectionWrapper sectionNum={3}>
+            <SectionWrapper sectionNum={3} collapsedSections={collapsedSections} onToggle={toggleSection}>
               <SectionHeader
                 number={3}
                 title="Pricing & Payments"
@@ -471,7 +475,7 @@ export default function App() {
 
           {/* SECTION 4 */}
           <div className="bg-white rounded-2xl shadow-lg shadow-slate-200/50 border border-slate-100 p-6 sm:p-8 mb-6 animate-fade-in-up">
-            <SectionWrapper sectionNum={4}>
+            <SectionWrapper sectionNum={4} collapsedSections={collapsedSections} onToggle={toggleSection}>
               <SectionHeader
                 number={4}
                 title="Future Interest & Scalability"
@@ -500,7 +504,7 @@ export default function App() {
 
           {/* SECTION 5 */}
           <div className="bg-white rounded-2xl shadow-lg shadow-slate-200/50 border border-slate-100 p-6 sm:p-8 mb-6 animate-fade-in-up">
-            <SectionWrapper sectionNum={5}>
+            <SectionWrapper sectionNum={5} collapsedSections={collapsedSections} onToggle={toggleSection}>
               <SectionHeader
                 number={5}
                 title="Additional Market Research"
